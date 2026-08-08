@@ -2,7 +2,7 @@
 
 
 class SecretManagerWrapper:
-    """Infrastructure client wrapper for GCP Secret Manager."""
+    """Secret Manager client wrapper for retrieving system secrets."""
 
     def __init__(self, project_id: str) -> None:
         self._project_id = project_id

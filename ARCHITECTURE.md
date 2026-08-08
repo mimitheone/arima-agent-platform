@@ -1,82 +1,47 @@
 # ARIMA Agent Platform - System Architecture
 
 ## 1. Overview
-ARIMA Agent Platform is an extensible, enterprise-ready platform designed to orchestrate, execute, and monitor autonomous AI agents. The platform provides a modular framework for managing multi-agent collaboration, tool integration, context/memory management, and seamless deployment.
+ARIMA Agent Platform is an enterprise-ready, multi-agent platform designed to orchestrate, execute, and evaluate time series forecasting workflows using Google ADK and Clean Architecture principles.
 
 ---
 
-## 2. High-Level System Architecture
+## 2. High-Level Architecture Diagram
 
 ```mermaid
 graph TD
-    Client[Client Applications / UI / CLI] --> API[API Gateway / REST / WebSocket]
+    Client[Client / Trigger] --> App[Application Layer: Workflows & DTOs]
     
-    subgraph Core Engine
-        API --> Router[Agent Router & Controller]
-        Router --> Orchestrator[Orchestration & Workflow Engine]
-        Orchestrator --> AgentManager[Agent Lifecycle Manager]
+    subgraph Core
+        Domain[Domain Layer: Entities & Interfaces]
     end
 
-    subgraph Intelligence & Tools
-        AgentManager --> PromptEngine[Prompt & Context Manager]
-        AgentManager --> ModelAdapter[LLM Provider Adapters]
-        AgentManager --> ToolRegistry[Tool & Skill Registry]
+    subgraph Adapters
+        App --> Agents[Agents: Coordinator, Data Engineer, Statistician, ARIMA, QA, Reporting]
+        App --> Tools[Categorized Tools: Storage, Statistics, Forecasting, Validation, Visualization]
+        App --> Contracts[Contracts: Messages, Events, Requests, Results]
     end
 
-    subgraph Storage & Context
-        PromptEngine --> VectorDB[(Vector DB / Embeddings)]
-        AgentManager --> StateStore[(Session & State Store)]
-        ToolRegistry --> Sandbox[Execution Sandbox / Runtime]
+    subgraph Infrastructure & Cloud
+        Agents --> ADK[Google ADK Runner]
+        Tools --> GCP[GCP Services: GCS, BigQuery, PubSub, Secret Manager, Vertex, Logging]
+        Agents --> State[State Storage / Memory]
+        Agents --> Observability[Observability: Tracing, Logging, Metrics]
     end
 
-    ModelAdapter --> ExtLLM[External LLM Providers]
+    subgraph Evaluation
+        Eval[Evaluation Framework: Datasets, Benchmarks, Metrics, Goldens]
+    end
 ```
 
 ---
 
-## 3. Core Components
+## 3. Layer Architecture Breakdown
 
-### 3.1. API Gateway & Transport Layer
-- **REST / gRPC APIs**: Primary interface for external services, user applications, and administration.
-- **WebSocket / Event Streams**: Real-time bidirectional communication for streaming agent responses, status updates, and interactive feedback.
-
-### 3.2. Orchestration & Workflow Engine
-- **Task Dispatcher**: Schedules and queues tasks based on priority, dependencies, and available resources.
-- **Multi-Agent Coordination**: Supports sequential, hierarchical, and collaborative multi-agent communication patterns.
-
-### 3.3. Agent Runtime & Lifecycle Manager
-- **Agent Instance Management**: Controls initialization, execution, pause, resume, and termination of active agent sessions.
-- **State & Memory Management**: Manages short-term conversation context, persistent memory, and long-term knowledge retrieval.
-
-### 3.4. LLM & Model Adapters
-- Multi-provider support (OpenAI, Anthropic, Google Gemini, Local Models via Ollama/vLLM).
-- Standardized provider abstraction layer supporting streaming, structured outputs, and function calling.
-
-### 3.5. Tool & Skill Registry
-- Dynamic discovery and binding of tools (APIs, Code Interpreters, Web Browsers, File Systems).
-- Sandboxed tool execution environment for security and resource isolation.
-
----
-
-## 4. Data & Memory Layer
-
-| Component | Technology / Usage | Description |
+| Layer | Path | Description |
 | :--- | :--- | :--- |
-| **Session Store** | Redis / PostgreSQL | Manages active sessions, transient states, and real-time events. |
-| **Vector DB** | Qdrant / Pinecone / pgvector | Stores embeddings for semantic search, long-term memory, and RAG capabilities. |
-| **Artifact Store** | S3 / MinIO / Local FS | Stores generated files, execution logs, and output media. |
-
----
-
-## 5. Security & Isolation
-
-- **Authentication & RBAC**: Role-based access control for API endpoints and resource access.
-- **Sandboxing**: Containerized (Docker/MicroVM) execution environment for untrusted dynamic code execution.
-- **Secret Management**: Secure credential injection for tool execution without exposing keys to agents.
-
----
-
-## 6. Development & Deployment
-
-- **Containerization**: Standard Docker & Docker Compose setup for local development and microservice deployment.
-- **Monitoring & Telemetry**: OpenTelemetry tracing, structured logging, and metrics monitoring for agent runs.
+| **Domain** | `src/arima_agent_platform/domain/` | Enterprise Entities, Value Objects, Domain Interfaces, Exceptions. |
+| **Application** | `src/arima_agent_platform/application/` | DTOs, Service Interfaces, and Workflow Orchestrators. |
+| **Adapters** | `src/arima_agent_platform/adapters/` | Agent protocols, Categorized Tools, and Data Contracts. |
+| **Infrastructure** | `src/arima_agent_platform/infrastructure/` | GCP wrappers, ADK Runner, State Repositories, Observability. |
+| **Evaluation** | `src/arima_agent_platform/evaluation/` | Datasets, Benchmarks, Metrics, and Golden Datasets. |
+| **Prompts** | `src/arima_agent_platform/prompts/` | Agent System Prompt Markdown Templates. |

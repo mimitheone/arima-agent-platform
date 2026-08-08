@@ -7,9 +7,11 @@ from pydantic import BaseModel, ConfigDict
 
 class AgentRole(StrEnum):
     COORDINATOR = "coordinator"
-    DATA_INGESTION = "data_ingestion"
-    FORECASTING = "forecasting"
-    EVALUATION = "evaluation"
+    DATA_ENGINEER = "data_engineer"
+    STATISTICIAN = "statistician"
+    ARIMA = "arima"
+    QA = "qa"
+    REPORTING = "reporting"
 
 
 class AgentEntity(BaseModel):

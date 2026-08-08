@@ -1,1 +1,0 @@
-"""Tools interface adapters module."""

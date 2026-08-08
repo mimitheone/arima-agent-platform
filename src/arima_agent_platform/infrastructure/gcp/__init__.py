@@ -1,1 +1,1 @@
-"""Google Cloud Platform infrastructure integrations module."""
+"""Google Cloud Platform infrastructure drivers package."""

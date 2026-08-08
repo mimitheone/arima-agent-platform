@@ -3,7 +3,7 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from arima_agent_platform.use_cases.interfaces.adk_service import ADKServiceProtocol
+from arima_agent_platform.application.interfaces.adk_service import ADKServiceProtocol
 
 
 class ADKAgentRunner(ADKServiceProtocol):
