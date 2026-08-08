@@ -9,16 +9,21 @@ ARIMA Agent Platform is an enterprise-ready, multi-agent platform designed to or
 
 ```mermaid
 graph TD
-    Client[Client / Trigger] --> App[Application Layer: Workflows & DTOs]
+    Client[Client / Trigger] --> AppService[Application Layer: Services & Workflows]
     
     subgraph Core
-        Domain[Domain Layer: Entities & Interfaces]
+        DomainEntities[Domain Entities: forecast, dataset, model, agent, time_series]
+        DomainServices[Domain Services: forecasting_service, validation_service]
+    end
+
+    subgraph Workflows & Orchestration
+        AppService --> ARIMAWorkflow[ARIMA Workflow (Deterministic Python Coordinator)]
     end
 
     subgraph Adapters
-        App --> Agents[Agents: Coordinator, Data Engineer, Statistician, ARIMA, QA, Reporting]
-        App --> Tools[Categorized Tools: Storage, Statistics, Forecasting, Validation, Visualization]
-        App --> Contracts[Contracts: Messages, Events, Requests, Results]
+        ARIMAWorkflow --> Agents[ADK Agents: Data Engineer, Statistician, ARIMA, QA, Reporting]
+        ARIMAWorkflow --> Tools[Categorized Tools: Storage, Statistics, Forecasting, Validation, Visualization]
+        ARIMAWorkflow --> Contracts[Contracts: Messages, Events, Requests, Results]
     end
 
     subgraph Infrastructure & Cloud
@@ -39,9 +44,9 @@ graph TD
 
 | Layer | Path | Description |
 | :--- | :--- | :--- |
-| **Domain** | `src/arima_agent_platform/domain/` | Enterprise Entities, Value Objects, Domain Interfaces, Exceptions. |
-| **Application** | `src/arima_agent_platform/application/` | DTOs, Service Interfaces, and Workflow Orchestrators. |
-| **Adapters** | `src/arima_agent_platform/adapters/` | Agent protocols, Categorized Tools, and Data Contracts. |
-| **Infrastructure** | `src/arima_agent_platform/infrastructure/` | GCP wrappers, ADK Runner, State Repositories, Observability. |
+| **Domain** | `src/arima_agent_platform/domain/` | Entities (`forecast`, `dataset`, `model`, `agent`, `time_series`), Domain Services (`forecasting_service`, `validation_service`), Interfaces, and Exceptions. |
+| **Application** | `src/arima_agent_platform/application/` | DTOs, Application Services (`forecasting_application_service`, `agent_execution_service`), Application Agent Contracts, and Workflows (`arima_workflow.py`). |
+| **Adapters** | `src/arima_agent_platform/adapters/` | Deterministic Coordinator Protocol, Specialized Agent Protocols, Categorized Tools, and Contracts. |
+| **Infrastructure** | `src/arima_agent_platform/infrastructure/` | GCP wrappers, ADK Runner, State Repositories, Observability (`tracing`, `logging`, `metrics`). |
 | **Evaluation** | `src/arima_agent_platform/evaluation/` | Datasets, Benchmarks, Metrics, and Golden Datasets. |
 | **Prompts** | `src/arima_agent_platform/prompts/` | Agent System Prompt Markdown Templates. |
