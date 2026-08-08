@@ -24,6 +24,10 @@ class BaseAgentProtocol(Protocol):
     def description(self) -> str:
         ...
 
+    @property
+    def instruction(self) -> str:
+        ...
+
     async def run(self, input_data: Mapping[str, Any]) -> Mapping[str, Any]:
         ...
 
@@ -37,15 +41,18 @@ class BaseAgent(ABC):
         role: AgentRole,
         description: str,
         prompt_filename: str | None = None,
+        instruction: str | None = None,
     ) -> None:
         self._name = name
         self._role = role
         self._description = description
         self._registered_tools: dict[str, BaseToolProtocol] = {}
-        self._prompt: str = ""
+        self._instruction: str = instruction or ""
 
         if prompt_filename:
-            self._prompt = self.load_prompt(prompt_filename)
+            loaded_prompt = self.load_prompt(prompt_filename)
+            if loaded_prompt:
+                self._instruction = loaded_prompt
 
     @property
     def name(self) -> str:
@@ -63,9 +70,14 @@ class BaseAgent(ABC):
         return self._description
 
     @property
+    def instruction(self) -> str:
+        """Return the agent system prompt instructions."""
+        return self._instruction
+
+    @property
     def prompt(self) -> str:
-        """Return the system prompt template."""
-        return self._prompt
+        """Alias for instruction system prompt."""
+        return self._instruction
 
     @property
     def registered_tools(self) -> Mapping[str, BaseToolProtocol]:
