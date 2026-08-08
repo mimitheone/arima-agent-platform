@@ -1,0 +1,1 @@
+"""Shared state adapter module."""

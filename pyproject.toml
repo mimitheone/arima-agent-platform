@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "arima-agent-platform"
+version = "0.1.0"
+description = "Production-ready Google ADK multi-agent time series forecasting platform"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-adk>=0.1.0",
+    "google-genai>=0.1.0",
+    "google-cloud-storage>=2.14.0",
+    "google-cloud-secret-manager>=2.20.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+    "pyright>=1.1.350",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/arima_agent_platform"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+]
+ignore = []
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/__pycache__"]
+pythonVersion = "3.12"
+pythonPlatform = "All"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
